@@ -5,6 +5,26 @@
     <title>Title</title>
 </head>
 <body>
-
+{% if To_change %}
+    <div>
+        <h4>请修改信息</h4>
+    </div>
+{% elif Bool_changed %}
+    <div class="alert alert-error">
+        <h4>修改成功！</h4>
+    </div>
+{% elif not Bool_changed %}
+    <div class="alert alert-error">
+        <h4>未修改！</h4>
+    </div>
+{% endif %}
+<form action="" method="post">
+    <table>
+        {{ form.as_table }}
+    </table>
+    {% csrf_token %}
+    <input type="submit" value="确认修改">
+</form>
+<a href="{% url 'user:usercenter' %}">返回用户中心</a>
 </body>
 </html>
