@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import RegisterForm, LoginForm,ChangePWForm
+from .forms import RegisterForm, LoginForm,ChangePWForm,ChangeInfoForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
@@ -170,7 +170,37 @@ def user_center(request):
 
 @login_required(login_url='login')
 def change_info(request):
-    pass
+    To_change = True
+    Bool_changed = False
+    if request.method == 'GET':
+        form = ChangeInfoForm()
+        return render(request, 'users/changeinfo.html', {'form': form, 'To_change': To_change})
+    elif request.method == 'POST':
+        form = ChangeInfoForm(request.POST)
+        if form.is_valid():
+            telephone = request.POST.get('telephone', '')
+            age = 0  # ugly solution
+            if form.cleaned_data['age'] is not None:
+                age = request.POST.get('age', '')
+            # gender = request.POST.get('gender', '')
+            email = request.POST.get('email', '')
+            name = request.POST.get('name', '')
+            username = request.user.username
+            if name != u'':
+                utils.change_name(username, name)
+                Bool_changed = True
+            if telephone != u'':
+                utils.change_tel(username, telephone)
+                Bool_changed = True
+            if email != u'':
+                utils.change_email(username, email)
+                Bool_changed = True
+            if age is not None and int(age) >= 1:
+                utils.change_age(username, age)
+                Bool_changed = True
+            return render(request, 'users/changeinfo.html', {'Bool_changed': Bool_changed, })
+            # 'Bool_notchanged':Bool_notchanged})
+        return render(request, 'users/changeinfo.html', {'form': form, 'Bool_changed': Bool_changed})
 
 @login_required(login_url='login')
 def change_pw(request):
