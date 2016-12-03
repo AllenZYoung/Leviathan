@@ -18,3 +18,7 @@ class RegisterForm(forms.Form):
     hospital = forms.ChoiceField(required=True, label='所属医院', widget=forms.Select(),
                                  choices=utils.select_hospital())
 
+
+class FileForm(forms.Form):
+    filefield = forms.FileField(required=True, label='请选择文件')
+    # filepath = forms.FilePathField(required=True, label='请选择文件路径')

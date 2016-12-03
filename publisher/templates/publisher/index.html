@@ -5,8 +5,11 @@
     <title>index</title>
 </head>
 <body>
+    {% if message %}
+        <h3>{{ message }}</h3>
+    {% endif %}
     你好，{{ loginname }}
-    <a href="{% url 'logout' %}">注销</a>
+    <a href="{% url 'publisher:logout' %}">注销</a>
     <table>
         <th>
             <td>编号</td>
@@ -31,10 +34,14 @@
                 <td>{{ item.id_adminpublisher.loginname }}</td>
                 <td>{{ item.createtime }}</td>
                 <td>{{ item.fee }}</td>
-                <td><a href="{% url  'alter' item.id %}">修改</a>&nbsp;&nbsp;<a href="{% url 'delete' item.id %}">删除</a></td>
+                <td>
+                    <a href="{% url 'publisher:alter' item.id_bulletin %}">修改</a>&nbsp;&nbsp;
+                    <a href="{% url 'publisher:delete' item.id_bulletin %}">删除</a>
+                </td>
             </tr>
         {% endfor %}
     </table>
-<a href="{% url 'create' %}">发布新的预约信息</a>
+<a href="{% url 'publisher:create' %}">发布新的预约信息</a>
+<a href="{% url 'publisher:batchUpload' %}">批量发布新的预约信息</a>
 </body>
 </html>

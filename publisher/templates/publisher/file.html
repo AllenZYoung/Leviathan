@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试文件</title>
+</head>
+<body>
+    {% if error_message  %}
+        {{ error_message }}
+    {% endif %}
+    <form action="" method="post" enctype="multipart/form-data">
+        <table>
+            {{ form.as_table }}
+        </table>
+        {% csrf_token %}
+        <input type="submit" value="上传"></br>
+    </form>
+    <a href="{% url 'publisher:index' %}">查看已发布的信息列表</a>
+</body>
+</html>
