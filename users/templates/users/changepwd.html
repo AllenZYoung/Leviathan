@@ -15,19 +15,16 @@
 {% endif %}
 {% if changepwd_success %}
     <div class="alert alert-error">
-        <h4>修改成功！请重新登录！</h4>
-        <a href="{% url 'users:login' %}">立即登录</a>
+        <h4>修改成功！</h4>
     </div>
 {% endif %}
-<form action="" method="post">
-    <table>
-        {{ form.as_table }}
-    </table>
-    {% csrf_token %}
-    <input type="submit" value="确认修改">
-</form>
-{% if not changepwd_success %}
+    <form action="" method="post">
+        <table>
+            {{ form.as_table }}
+        </table>
+        {% csrf_token %}
+        <input type="submit" value="确认修改">
+    </form>
     <a href="{% url 'user:usercenter' %}">返回用户中心</a>
-{% endif %}
 </body>
 </html>

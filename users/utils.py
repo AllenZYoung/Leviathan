@@ -95,21 +95,3 @@ def addAppointment(bulletin,username):
 
 def change_password(newpassword,username):
     models.Patient.objects.filter(username=username).update(password=newpassword)
-
-    User.objects.filter(username=username).delete()
-    usernew = User.objects.create_user(username,None,newpassword)
-    usernew.save()
-
-def change_name(username,name):
-    models.Patient.objects.filter(username=username).update(name=name)
-def change_tel(username,tel):
-    models.Patient.objects.filter(username=username).update(telephone=tel)
-def change_email(username,email):
-    models.Patient.objects.filter(username=username).update(email=email)
-def change_age(username,age):
-    models.Patient.objects.filter(username=username).update(age=age)
-# def change_gender(username,age):
-#     models.Patient.objects.filter(username=username).update(gender=gender)
-
-
-

@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^doctor/$', views.doctor, name='doctor'),
     url(r'^reservation/$', views.reservation, name='reservation'),
     url(r'^usercenter/$', views.user_center, name='usercenter'),
-    url(r'^usercenter/changeinfo/', views.change_info, name='changeinfo'),
-    url(r'^usercenter/accountsafe/', views.change_pw, name='accountsafe'),
-    url(r'^usercenter/viewa/', views.view_appointment, name='viewa'),
+    url(r'^usercenter/changeinfo/$', views.change_info, name='changeinfo'),
+    url(r'^usercenter/accountsafe/$', views.change_pw, name='accountsafe'),
+    url(r'^usercenter/viewa/$', views.view_appointment, name='viewa'),
 ]

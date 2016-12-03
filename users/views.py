@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import RegisterForm, LoginForm, ChangePWForm, ChangeInfoForm
+from .forms import RegisterForm, LoginForm,ChangePWForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
@@ -59,7 +59,7 @@ def login(request):
 
 def logout(request):
     auth_logout(request)
-    return render(request, 'users/logout.html')
+    return render(request,'users/logout.html')
 
 
 def register(request):
@@ -81,14 +81,14 @@ def register(request):
 
 
 class Item:
-    doctor = None
-    bulletin = None
-    department = None
+    doctor=None
+    bulletin=None
+    department=None
 
-    def __init__(self, doctor, bulletin, department):
-        self.doctor = doctor
-        self.bulletin = bulletin
-        self.department = department
+    def __init__(self,doctor,bulletin,department):
+        self.doctor=doctor
+        self.bulletin=bulletin
+        self.department=department
 
 
 def department(request):
@@ -97,24 +97,23 @@ def department(request):
 
 def hospital(request):
     hospital_id = request.GET.get('hospital_id', None)
-    department_id = request.GET.get('department_id', None)
+    department_id=request.GET.get('department_id',None)
     hospital = models.Hospital.objects.filter(id_hospital=hospital_id).first()
     departments = models.Department.objects.filter(id_hospital=hospital_id)
     if department_id:
         location = models.Location.objects.filter(id_location=hospital.id_location.id_location).first()
-        bulletins = utils.getBulletins(department_id)
-        doctors = utils.getDoctors(bulletins)
-        department = models.Department.objects.filter(id_department=department_id).first()
-        items = []
+        bulletins=utils.getBulletins(department_id)
+        doctors=utils.getDoctors(bulletins)
+        department=models.Department.objects.filter(id_department=department_id).first()
+        items=[]
         for i in range(len(bulletins)):
-            item = Item(doctor=doctors[i], bulletin=bulletins[i], department=department)
+            item=Item(doctor=doctors[i],bulletin=bulletins[i],department=department)
             items.append(item)
         return render(request, 'users/hospital.html',
-                      {'username': request.user.username, 'hospital': hospital, 'location': location,
-                       'departments': departments, 'items': items})
+                      {'username': request.user.username, 'hospital': hospital, 'location': location,'departments':departments,'items':items})
     else:
-        return render(request, 'users/hospital.html',
-                      {'username': request.user.username, 'hospital': hospital, 'departments': departments})
+        return render(request,'users/hospital.html',{'username': request.user.username, 'hospital': hospital,'departments':departments})
+
 
 
 @login_required(login_url='login')
@@ -123,15 +122,14 @@ def test(request):
 
 
 def doctor(request):
-    doctor_id = request.GET.get('doctor_id', 1)
-    bulletin_id = request.GET.get('bulletin_id', 1)
-    department_id = request.GET.get('department_id', 1)
-    doctor = models.Doctor.objects.filter(id_doctor=doctor_id).first()
-    bulletin = models.Bulletin.objects.filter(id_bulletin=bulletin_id).first()
-    department = models.Department.objects.filter(id_department=department_id).first()
-    return render(request, 'users/doctor.html',
-                  {'username': request.user.username, 'doctor': doctor, 'bulletin': bulletin
-                      , 'department': department})
+    doctor_id=request.GET.get('doctor_id',1)
+    bulletin_id=request.GET.get('bulletin_id',1)
+    department_id=request.GET.get('department_id',1)
+    doctor=models.Doctor.objects.filter(id_doctor=doctor_id).first()
+    bulletin=models.Bulletin.objects.filter(id_bulletin=bulletin_id).first()
+    department=models.Department.objects.filter(id_department=department_id).first()
+    return render(request,'users/doctor.html',{'username':request.user.username,'doctor':doctor,'bulletin':bulletin
+        ,'department':department})
 
 
 @login_required(login_url='login')
@@ -142,13 +140,13 @@ def reservation(request):
     doctor = models.Doctor.objects.filter(id_doctor=doctor_id).first()
     bulletin = models.Bulletin.objects.filter(id_bulletin=bulletin_id).first()
     department = models.Department.objects.filter(id_department=department_id).first()
-    if request.method == 'POST':
-        if utils.addAppointment(bulletin, request.user.username):
+    if request.method=='POST':
+        if utils.addAppointment(bulletin,request.user.username):
             return HttpResponse('预约成功')
         else:
             return HttpResponse('您已成功预约，无需重复预约')
-    return render(request, 'users/reservation.html', {'username': request.user.username
-        , 'doctor': doctor, 'bulletin': bulletin, 'department': department})
+    return render(request,'users/reservation.html',{'username':request.user.username
+        ,'doctor':doctor,'bulletin':bulletin,'department':department})
 
 
 @login_required(login_url='login')
@@ -167,15 +165,18 @@ def user_center(request):
     email = userhere.email
     credit = userhere.credit
     return render(request, 'users/usercenter.html', {'wholename': name, 'sex': sex, 'age': age,
-                                                     'idcn': idcn, 'tel': tele, 'mail': email, 'credit': credit
-                                                     })
+    'idcn':idcn,'tel':tele,'mail':email,'credit':credit
+    })
 
+@login_required(login_url='login')
+def change_info(request):
+    pass
 
 @login_required(login_url='login')
 def change_pw(request):
     if request.method == 'GET':
         form = ChangePWForm()
-        return render(request, 'users/changepwd.html', {'form': form})
+        return render(request,'users/changepwd.html', {'form': form})
     elif request.method == 'POST':
         form = ChangePWForm(request.POST)
         if form.is_valid():
@@ -184,50 +185,13 @@ def change_pw(request):
             user = authenticate(username=username, password=oldpassword)
             if user is not None and user.is_active:
                 newpassword = request.POST.get('newpassword1', '')
-                utils.change_password(newpassword, username)
-                return render(request, 'users/changepwd.html', {'changepwd_success': True})
-                # return redirect('users/usercenter/accountsafe')
+                utils.change_password(newpassword,username)
+                return render(request,'users/changepwd.html', {'changepwd_success': True})
             else:
-                return render(request, 'users/changepwd.html',
-                              {'form': form, 'oldpassword_is_wrong': True})
+                return render(request,'users/changepwd.html',
+                                         {'form': form, 'oldpassword_is_wrong': True})
         else:
-            return render(request, 'users/changepwd.html', {'form': form})
-
-
-@login_required(login_url='login')
-def change_info(request):
-    To_change = True
-    Bool_changed = False
-    if request.method == 'GET':
-        form = ChangeInfoForm()
-        return render(request, 'users/changeinfo.html', {'form': form, 'To_change': To_change})
-    elif request.method == 'POST':
-        form = ChangeInfoForm(request.POST)
-        if form.is_valid():
-            telephone = request.POST.get('telephone', '')
-            age = 0  # ugly solution
-            if form.cleaned_data['age'] is not None:
-                age = request.POST.get('age', '')
-            # gender = request.POST.get('gender', '')
-            email = request.POST.get('email', '')
-            name = request.POST.get('name', '')
-            username = request.user.username
-            if name != u'':
-                utils.change_name(username, name)
-                Bool_changed = True
-            if telephone != u'':
-                utils.change_tel(username, telephone)
-                Bool_changed = True
-            if email != u'':
-                utils.change_email(username, email)
-                Bool_changed = True
-            if age is not None and int(age) >= 1:
-                utils.change_age(username, age)
-                Bool_changed = True
-            return render(request, 'users/changeinfo.html', {'Bool_changed': Bool_changed, })
-            # 'Bool_notchanged':Bool_notchanged})
-        return render(request, 'users/changeinfo.html', {'form': form, 'Bool_changed': Bool_changed})
-
+            return render(request,'users/changepwd.html', {'form': form})
 
 @login_required(login_url='login')
 def view_appointment(request):

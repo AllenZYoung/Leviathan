@@ -37,32 +37,28 @@
             <td>预约费用</td>
             <td>预约</td>
         </tr>
-        {% for item in items %}
-            <tr>
-                <td>
-                    <a href="{% url 'users:doctor' %}?doctor_id={{ item.doctor.id_doctor }}&bullet_id={{ item.bulletin.id_bulletin }}&department_id={{ item.department.id_department }}">{{ item.doctor.name }}</a>
-                </td>
+    {% for item in items%}
+             <tr>
+                <td><a href="{% url 'users:doctor' %}?doctor_id={{ item.doctor.id_doctor }}&bullet_id={{ item.bulletin.id_bulletin }}&department_id={{ item.department.id_department }}">{{ item.doctor.name }}</a></td>
                 <td>{{ item.department.name }}</td>
                 <td>{{ item.doctor.level }}</td>
                 <td>{{ item.bulletin.availabletime }}</td>
                 <td>{{ item.bulletin.countavailable }}</td>
                 <td>{{ item.bulletin.countoccupied }}</td>
                 <td>{{ item.bulletin.fee }}</td>
-                {% if username %}
-                    {% if item.bulletin.countavailable > item.bulletin.countoccupied %}
-                        <td>
-                            <a href="{% url 'users:reservation' %}?doctor_id={{ item.doctor.id_doctor }}&bulletin_id={{ item.bulletin.id_bulletin }}&department_id={{ item.department.id_department }}">点击预约</a>
-                        </td>
-                    {% else %}
-                        <td>名额已满，无法预约</td>
-                    {% endif %}
+                 {% if username %}
+                     {% if item.bulletin.countavailable > item.bulletin.countoccupied %}
+                         <td><a href="{% url 'users:reservation' %}?doctor_id={{ item.doctor.id_doctor }}&bulletin_id={{ item.bulletin.id_bulletin }}&department_id={{ item.department.id_department }}">点击预约</a></td>
+                         {% else %}
+                         <td>名额已满，无法预约</td>
+                         {% endif %}
                 {% else %}
-                    <td><a href="{% url 'users:login' %}">登录</a></td>
+                <td><a href="{% url 'users:login' %}">登录</a></td>
                 {% endif %}
             </tr>
-        {% endfor %}
+    {% endfor %}
     </table>
-{% else %}
+    {% else %}
     当前没有可以预约的医生
 {% endif %}
 </body>
