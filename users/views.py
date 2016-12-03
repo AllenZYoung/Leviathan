@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import RegisterForm, LoginForm, ChangePWForm, ChangeInfoForm
+from forms import RegisterForm, LoginForm, ChangePWForm, ChangeInfoForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
@@ -231,4 +231,18 @@ def change_info(request):
 
 @login_required(login_url='login')
 def view_appointment(request):
+    username = request.user.username
+    # print(username)
+    # userhere = models.Patient.objects.filter(username='useruser').first()
+    # it should be :
+    userhere = models.Patient.objects.filter(username=username).first()
+    appointments = models.Appointment.objects.filter(username=username).all()
+    if appointments is not None:
+        for one_app in appointments:
+            id_app = one_app.id_appointment
+            reg_time = one_app.registrationtime
+            is_paid = one_app.ispaid
+            id_patient = one_app.id_patient
+            doctor_name = models.Doctor.objects.filter()
+    # return render(request,'users/viewa.html',{'username':username,'name':name,})
     pass
