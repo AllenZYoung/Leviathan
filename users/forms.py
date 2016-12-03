@@ -50,8 +50,8 @@ class ChangeInfoForm(forms.Form):
     # debug mode
     # idcardnumber = forms.CharField(max_length=18, label='18位合法身份证号')
     GENDER = (
-        (0, '男'),
-        (1, '女')
+        ('男', '男'),
+        ('女', '女')
     )
     # gender = forms.ChoiceField(required=False,choices=GENDER, label='性别')
     age = forms.IntegerField(required=False,min_value=0, max_value=150, label='年龄')
