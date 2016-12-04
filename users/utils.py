@@ -102,10 +102,16 @@ def change_password(newpassword, username):
 
 def change_name(username,name):
     models.Patient.objects.filter(username=username).update(name=name)
+
+
 def change_tel(username,tel):
     models.Patient.objects.filter(username=username).update(telephone=tel)
+
+
 def change_email(username,email):
     models.Patient.objects.filter(username=username).update(email=email)
+
+
 def change_age(username,age):
     models.Patient.objects.filter(username=username).update(age=age)
 # def change_gender(username,age):

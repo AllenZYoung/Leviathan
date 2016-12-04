@@ -11,7 +11,7 @@
     你好，{{ loginname }}
     <a href="{% url 'publisher:logout' %}">注销</a>
     <table>
-        <th>
+        <tr>
             <td>编号</td>
             <td>科室</td>
             <td>医生</td>
@@ -22,7 +22,7 @@
             <td>发布时间</td>
             <td>预约费用</td>
             <td>操作</td>
-        </th>
+        </tr>
         {% for item in bulletins %}
             <tr>
                 <td>{{ item.id_bulletin }}</td>

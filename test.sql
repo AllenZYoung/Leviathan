@@ -1,5 +1,5 @@
-ALTER DATABASE leviathan DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-alter table table_name convert to character set utf8;
+# ALTER DATABASE leviathan DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+# alter table table_name convert to character set utf8;
 
 INSERT into location(province,city,county,street) VALUES ('北京','北京','海淀','学院路37号');
 INSERT into hospital(name,level,type,information,createtime,id_location)

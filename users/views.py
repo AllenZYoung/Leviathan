@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import RegisterForm, LoginForm, ChangePWForm,ChangeInfoForm
+from .forms import RegisterForm, LoginForm, ChangePWForm, ChangeInfoForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
@@ -20,14 +20,14 @@ def index(request):
     province = request.GET.get('province', None)
     if not province:
         province = provinces[0]
-        return redirect('/users/?province='+province)
+        return redirect('/users/?province=' + province)
     cities = utils.get_cities(province)
     city = request.GET.get('city', None)
     if not city:
-        location=models.Location.objects.filter(province__contains=province).first()
+        location = models.Location.objects.filter(province__contains=province).first()
         if location:
-            city=location.city
-    hospitals=None
+            city = location.city
+    hospitals = None
     if city:
         hospitals = utils.get_hospitals(city)
     return render(request, 'users/index.html', {'username': request.user.username, 'provinces': provinces
@@ -103,9 +103,9 @@ def hospital(request):
     hospital_id = request.GET.get('hospital_id', None)
     department_id = request.GET.get('department_id', None)
     if not department_id:
-        department=models.Department.objects.filter(id_hospital=hospital_id).first()
+        department = models.Department.objects.filter(id_hospital=hospital_id).first()
         if department:
-            department_id=department.id_department
+            department_id = department.id_department
     hospital = models.Hospital.objects.filter(id_hospital=hospital_id).first()
     departments = models.Department.objects.filter(id_hospital=hospital_id)
     if department_id:
