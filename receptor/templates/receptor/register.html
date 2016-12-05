@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+</head>
+<body>
+
+    {% if error_message %}
+        {{ error_message }}
+    {% endif %}
+
+    <form action="" method="post">
+        <table>
+            {{ form.as_table }}
+        </table>
+        {% csrf_token %}
+        <input type="submit" value="提交"></br>
+        <a href="{%  url 'receptor:login' %}">已有账号？立即登录</a>
+    </form>
+
+</body>
+</html>

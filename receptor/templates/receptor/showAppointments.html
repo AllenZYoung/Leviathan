@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>预约信息</title>
+    <script>
+    function confirmAppointment(name,id_appointment)
+    {
+        test=window.confirm("确认"+name+"预约");
+        if(test==true){
+            window.open("../confirmAppointments/?id="+id_appointment)
+        }
+
+    }
+    function searchPatient(name)
+    {
+        window.open("../patient/"+name)
+    }
+    </script>
+</head>
+<body>
+    <table>
+    <tr>
+        <th> 病人 </th><th> 科室 </th><th> 医生 </th><th> 是否缴费 </th><th> 费用 </th><th> 预约时间 </th><th> 是否确认 </th>
+    </tr>
+    {% for i in appointments %}
+    <tr>
+
+        <td> {{ i.patient.name}} </td>
+        <td> {{ i.department.name }} </td>
+        <td> {{ i.doctor.name }} </td>
+        <td> {{ i.anAppointment.ispaid}} </td>
+        <td> {{ i.fee }} </td>
+        <td> {{ i.time }} </td>
+        {% if not  i.isShow  %}
+        <td><button type="submit" onclick="confirmAppointment('{{ i.patient.name }}','{{ i.anAppointment.id_appointment }}')">确认</button></td>
+        {% else %}
+        <td> <strong>已经确认</strong> </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    </table>
+</body>
+</html>

@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^users/',include('users.urls',namespace='user')),
     url(r'^publisher/', include('publisher.urls',namespace='publisher')),
     url(r'^admin/', admin.site.urls),
+    url(r'^receptor/',include('receptor.urls',namespace='receptor')),
 ]

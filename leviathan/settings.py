@@ -31,6 +31,7 @@ ALLOWED_HOSTS = [u'127.0.0.1',u'localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    'receptor.apps.ReceptorConfig',
     'publisher.apps.PublisherConfig',
     'users.apps.UsersConfig',
     'django.contrib.admin',

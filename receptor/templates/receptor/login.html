@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<body>
+    {% if error_message %}
+        {{ error_message }}
+    {% endif %}
+    <form action="" method="post">
+        <table>
+            {{ form.as_table }}
+        </table>
+        {% csrf_token %}
+        <input type="submit" value="登录"></br>
+        <a href="{%  url 'receptor:register' %}">没有账户?</a>
+    </form>
+</body>
+</html>
