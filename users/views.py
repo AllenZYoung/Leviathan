@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import RegisterForm, LoginForm, ChangePWForm,ChangeInfoForm
+from .forms import RegisterForm, LoginForm, ChangePWForm, ChangeInfoForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
@@ -20,14 +20,14 @@ def index(request):
     province = request.GET.get('province', None)
     if not province:
         province = provinces[0]
-        return redirect('/users/?province='+province)
+        return redirect('/users/?province=' + province)
     cities = utils.get_cities(province)
     city = request.GET.get('city', None)
     if not city:
-        location=models.Location.objects.filter(province__contains=province).first()
+        location = models.Location.objects.filter(province__contains=province).first()
         if location:
-            city=location.city
-    hospitals=None
+            city = location.city
+    hospitals = None
     if city:
         hospitals = utils.get_hospitals(city)
     return render(request, 'users/index.html', {'username': request.user.username, 'provinces': provinces
@@ -103,9 +103,9 @@ def hospital(request):
     hospital_id = request.GET.get('hospital_id', None)
     department_id = request.GET.get('department_id', None)
     if not department_id:
-        department=models.Department.objects.filter(id_hospital=hospital_id).first()
+        department = models.Department.objects.filter(id_hospital=hospital_id).first()
         if department:
-            department_id=department.id_department
+            department_id = department.id_department
     hospital = models.Hospital.objects.filter(id_hospital=hospital_id).first()
     departments = models.Department.objects.filter(id_hospital=hospital_id)
     if department_id:
@@ -236,6 +236,53 @@ def change_pw(request):
             return render(request, 'users/changepwd.html', {'form': form})
 
 
+class Apt:
+    patient = None
+    doctor = None
+    bulletin = None
+    department = None
+    hospital = None
+
+    def __init__(self, patient, doctor, bulletin, department, hospital):
+        self.patient = patient
+        self.doctor = doctor
+        self.bulletin = bulletin
+        self.department = department
+        self.hospital = hospital
+
+
 @login_required(login_url='users:login')
 def view_appointment(request):
-    pass
+    username = request.user.username
+    # print(username)
+    # userhere = models.Patient.objects.filter(username='useruser').first()
+    # it should be :
+    Have_App = False
+    user_now = models.Patient.objects.filter(username=username).first()
+    user_id = user_now.id_patient
+    apps = models.Appointment.objects.filter(id_patient=user_id)
+    Apts = []
+    if apps is not None:
+        for one_app in apps:
+            # app_id = one_app.id_appointment  # 预约编号
+            # is_paid = one_app.ispaid  # 支付信息
+            # reg_time = one_app.registrationtime  # 时间
+            #
+            id_b = one_app.id_bulletin  # 信息编号
+            btn_now = models.Bulletin.objects.filter(id_bulletin=id_b)  # 信息
+            id_dep_doc = btn_now.id_department_doctor
+            dep_doc = models.DoctorDepartment.objects.filter(id_department__doctordepartment=id_dep_doc)
+
+            id_doc = dep_doc.id_doctor
+            id_dep = dep_doc.id_department
+            dep_now = models.Department.objects.filter(id_department=id_dep).first()
+
+            id_hos = dep_now.id_hospital
+
+            doc_now = models.Doctor.objects.filter(id_doctor=id_doc).first()
+            hos_now = models.Hospital.objects.filter(id_hospital=id_hos).first()
+
+            apt = Apt(user_now, doc_now, btn_now, dep_now, hos_now)
+            Apts.append(apt)
+    # print(userhere)
+    return render(request, 'users/viewa.html', {'apps': Apts})
