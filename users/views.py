@@ -166,7 +166,10 @@ def pay(request):
 
 @login_required(login_url='users:login')
 def evaluate(request):
-    return HttpResponse('评价医生')
+    bulletin_id=request.GET.get('bulletin_id',None)
+    if not bulletin_id:
+        return HttpResponse('评价医生')
+
 
 
 @login_required(login_url='users:login')

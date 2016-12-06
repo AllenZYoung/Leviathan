@@ -221,3 +221,20 @@ class Appointment(models.Model):
 
     def __unicode__(self):
         return u'appointment id: %s' % self.id_appointment
+
+
+class Evaluation(models.Model):
+    id_evaluation=models.AutoField(null=False, primary_key=True, max_length=11)
+    patient=models.ForeignKey(Patient, to_field='id_patient', db_column='patient')
+    doctor=models.ForeignKey(Doctor, to_field='id_doctor', db_column='doctor')
+    level=models.IntegerField(null=True,blank=True,help_text='医生评价等级')
+    comment=models.TextField(null=True,blank=True,help_text='医生评价',default='暂无评价信息')
+
+    class Meta:
+        db_table='evaluation'
+
+        def __str__(self):
+            return 'evaluation id: %s' % self.id_evaluation
+
+        def __unicode__(self):
+            return u'evaluation id: %s' % self.id_evaluation
