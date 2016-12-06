@@ -17,4 +17,6 @@ urlpatterns = [
     url(r'^usercenter/changeinfo/$', views.change_info, name='changeinfo'),
     url(r'^usercenter/accountsafe/$', views.change_pw, name='accountsafe'),
     url(r'^usercenter/viewa/$', views.view_appointment, name='viewa'),
+    url(r'^pay/$',views.pay,name='pay'),
+    url(r'^evaluate/$',views.evaluate,name='evaluate'),
 ]

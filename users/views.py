@@ -152,11 +152,21 @@ def reservation(request):
     department = models.Department.objects.filter(id_department=department_id).first()
     if request.method == 'POST':
         if utils.add_appointment(bulletin, request.user.username):
-            return HttpResponse('预约成功')
+            return render(request,'users/appdetail.html',{'message':'预约成功'})
         else:
-            return HttpResponse('您已成功预约，无需重复预约')
+            return render(request,'users/appdetail.html',{'message':'您已成功预约，无需重复预约'})
     return render(request, 'users/reservation.html', {'username': request.user.username
         , 'doctor': doctor, 'bulletin': bulletin, 'department': department})
+
+
+@login_required(login_url='users:login')
+def pay(request):
+    return render(request,'users/pay.html')
+
+
+@login_required(login_url='users:login')
+def evaluate(request):
+    return HttpResponse('评价医生')
 
 
 @login_required(login_url='users:login')

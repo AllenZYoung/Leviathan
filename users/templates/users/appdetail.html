@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>预约结果</title>
+</head>
+<body>
+{% if message %}
+    {{ message }} </br>
+{% endif %}
+<a href="{% url 'users:pay' %}">去付款</a>
+</body>
+</html>
