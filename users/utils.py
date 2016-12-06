@@ -96,23 +96,31 @@ def add_appointment(bulletin, username):
     return True
 
 
+def add_comment(bulletin_id, patient_id, level, comment):
+    doctor_department = models.Bulletin.objects.filter(id_bulletin=bulletin_id).first().id_doctor_department
+    doctor = models.DoctorDepartment.objects.filter(id_doctor_department=doctor_department.id_doctor_department).first().id_doctor
+    patient = models.Patient.objects.filter(id_patient=patient_id).first()
+    models.Evaluation.objects.create(level=level, comment=comment, doctor=doctor, patient=patient).save()
+
+
 def change_password(newpassword, username):
     models.Patient.objects.filter(username=username).update(password=newpassword)
 
 
-def change_name(username,name):
+def change_name(username, name):
     models.Patient.objects.filter(username=username).update(name=name)
 
 
-def change_tel(username,tel):
+def change_tel(username, tel):
     models.Patient.objects.filter(username=username).update(telephone=tel)
 
 
-def change_email(username,email):
+def change_email(username, email):
     models.Patient.objects.filter(username=username).update(email=email)
 
 
-def change_age(username,age):
+def change_age(username, age):
     models.Patient.objects.filter(username=username).update(age=age)
+
 # def change_gender(username,age):
 #     models.Patient.objects.filter(username=username).update(gender=gender)

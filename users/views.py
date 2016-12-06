@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import RegisterForm, LoginForm, ChangePWForm, ChangeInfoForm
+from .forms import RegisterForm, LoginForm, ChangePWForm, ChangeInfoForm, EvaluateForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
@@ -167,8 +167,21 @@ def pay(request):
 @login_required(login_url='users:login')
 def evaluate(request):
     bulletin_id=request.GET.get('bulletin_id',None)
-    if not bulletin_id:
-        return HttpResponse('评价医生')
+    patient_id=request.GET.get('patient_id',None)
+    # if not bulletin_id:
+    #     return HttpResponse('评价医生')
+    if request.method=='POST':
+        form = EvaluateForm(request.POST)
+        if form.is_valid():
+            level=form.cleaned_data['level']
+            comment=form.cleaned_data['comment']
+            utils.add_comment(bulletin_id,patient_id,level,comment)
+            return HttpResponse('评价成功')
+        else:
+            return render(request, 'users/evaluate.html', {'form': form,'message':'请输入正确信息'})
+    else:
+        form=EvaluateForm()
+        return render(request,'users/evaluate.html',{'form':form})
 
 
 

@@ -39,6 +39,7 @@ class ChangePWForm(forms.Form):
             cleaned_data = super(ChangePWForm, self).clean()
         return cleaned_data
 
+
 class ChangeInfoForm(forms.Form):
     # Name = forms.CharField()
     # username = forms.CharField(min_length=4, label='用户名')
@@ -55,3 +56,11 @@ class ChangeInfoForm(forms.Form):
     )
     # gender = forms.ChoiceField(required=False,choices=GENDER, label='性别')
     age = forms.IntegerField(required=False,min_value=0, max_value=150, label='年龄')
+
+
+class EvaluateForm(forms.Form):
+    LEVEL=(
+        (1,'*'),(2,'**'),(3,'***'),(4,'****'),(5,'*****')
+    )
+    level=forms.ChoiceField(choices=LEVEL,label='评价等级')
+    comment=forms.CharField(widget=forms.Textarea,label='写下你对医生的评价',required=False)
