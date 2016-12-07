@@ -3,33 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>首页</title>
-</head>
-<br>
-    {% if username %}
-         你好，{{ username }}
-        <a href="{% url 'users:logout' %}">注销</a></br>
-        <a href="{% url 'users:usercenter' %}">用户中心</a></br>
-    {% else %}
-        <a href="{%  url 'users:login' %}">登录</a></br>
-    {% endif %}
+    <style>
+        .main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+        .hvr-fade {
+             margin: .4em;
+  padding: 1em;
+  cursor: pointer;
+  background: #e1e1e1;
+  text-decoration: none;
+  color: #666;
+  /* Prevent highlight colour when element is tapped */
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 
-    选择省份</br>
+  /* Smooth fonts */
+  -webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px transparent;
+  overflow: hidden;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: color, background-color;
+  transition-property: color, background-color;
+}
+.hvr-fade:hover, .hvr-fade:focus, .hvr-fade:active {
+  background-color: #2098D1;
+  color: white;
+}
+
+
+    </style>
+</head>
+<body class="main">
+    {% if username %}
+         <h2>你好，{{ username }}</h2>
+        <a href="{% url 'users:logout' %}"  class="hvr-fade">注销</a>
+        <a href="{% url 'users:usercenter' %}"  class="hvr-fade">用户中心</a><br>
+    {% else %}
+        <a href="{%  url 'users:login' %}"  class="hvr-fade">登录</a><br>
+    {% endif %}
+    <div>
+    <h3>选择省份</h3>
     {% for province in provinces %}
-    <a href="?province={{ province }}">{{ province }}</a>
+    <a href="?province={{ province }}"  class="hvr-fade">{{ province }}</a>
     {% endfor %}
-    </br>
-    </br>选择城市</br>
+    <br>
+    <h3>选择城市</h3>
     {% if cities %}
         {% for city in cities %}
-{#            BUG here 首页直接点击市区会出错 由于这个&#}
-             <a href="{{ request.get_full_path }}&city={{ city }}">{{ city }}</a>
+            <a href="{{ request.path }}?province={{ province }}&city={{ city }}"  class="hvr-fade">{{ city }}</a>
         {% endfor %}
     {% endif %}
-    </br>选择医院</br>
+    <h3>选择医院</h3>
     {% if hospitals %}
         {% for hospital in hospitals %}
-            <a href="{% url 'users:hospital' %}?hospital_id={{ hospital.id_hospital }}">{{ hospital.name }}</a>
+            <a href="{% url 'users:hospital' %}?hospital_id={{ hospital.id_hospital }}"  class="hvr-fade">{{ hospital.name }}</a>
         {% endfor %}
     {% endif %}
+    </div>
 </body>
 </html>

@@ -5,11 +5,12 @@
     <title>付款界面</title>
 </head>
 <body>
-请用手机打开支付宝APP扫描二维码进行付款</br>
+<a href="{% url  'users:index' %}">回到首页</a><br>
+请用手机打开支付宝APP扫描二维码进行付款<br>
         {% load static %}
-        <img src="{% static 'users/payme.png' %}"/></br>
-或用手机打开微信APP扫描二维码进行付款</br>
+        <img src="{% static 'users/payme.png' %}"/><br>
+或用手机打开微信APP扫描二维码进行付款<br>
         {% load static %}
-        <img src="{% static 'users/paywechat.jpg' %}"/></br>
+        <img src="{% static 'users/paywechat.jpg' %}"/><br>
 </body>
 </html>

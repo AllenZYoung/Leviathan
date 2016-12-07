@@ -57,9 +57,10 @@ def get_bulletins(department_id):
     bulletins = []
     doctor_departments = models.DoctorDepartment.objects.filter(id_department=department_id)
     for doctor_department in doctor_departments:
-        find = models.Bulletin.objects.filter(id_doctor_department=doctor_department.id_doctor_department).first()
-        if find.availabletime > pytz.utc.localize(datetime.datetime.now()):
-            bulletins.append(find)
+        finds = models.Bulletin.objects.filter(id_doctor_department=doctor_department.id_doctor_department)
+        for find in finds:
+            if find.availabletime > pytz.utc.localize(datetime.datetime.now()):
+                bulletins.append(find)
     return bulletins
 
 

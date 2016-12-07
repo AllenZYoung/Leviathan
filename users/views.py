@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from .forms import RegisterForm, LoginForm, ChangePWForm, ChangeInfoForm, EvaluateForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from datetime import timedelta
 
 from . import models
 from . import utils
@@ -31,7 +32,7 @@ def index(request):
     if city:
         hospitals = utils.get_hospitals(city)
     return render(request, 'users/index.html', {'username': request.user.username, 'provinces': provinces
-        , 'cities': cities, 'hospitals': hospitals})
+        , 'cities': cities, 'hospitals': hospitals,'province':province})
 
 
 def login(request):
@@ -88,11 +89,13 @@ class Item:
     doctor = None
     bulletin = None
     department = None
+    endtime=None
 
     def __init__(self, doctor, bulletin, department):
         self.doctor = doctor
         self.bulletin = bulletin
         self.department = department
+        self.endtime=bulletin.availabletime + timedelta(hours=4)
 
 
 def department(request):
@@ -101,15 +104,17 @@ def department(request):
 
 def hospital(request):
     hospital_id = request.GET.get('hospital_id', None)
+    if not hospital_id:
+        return HttpResponse('请先选择医院！')
     department_id = request.GET.get('department_id', None)
     if not department_id:
         department = models.Department.objects.filter(id_hospital=hospital_id).first()
         if department:
             department_id = department.id_department
     hospital = models.Hospital.objects.filter(id_hospital=hospital_id).first()
+    location = models.Location.objects.filter(id_location=hospital.id_location.id_location).first()
     departments = models.Department.objects.filter(id_hospital=hospital_id)
     if department_id:
-        location = models.Location.objects.filter(id_location=hospital.id_location.id_location).first()
         bulletins = utils.get_bulletins(department_id)
         doctors = utils.get_doctors(bulletins)
         department = models.Department.objects.filter(id_department=department_id).first()
@@ -118,11 +123,10 @@ def hospital(request):
             item = Item(doctor=doctors[i], bulletin=bulletins[i], department=department)
             items.append(item)
         return render(request, 'users/hospital.html',
-                      {'username': request.user.username, 'hospital': hospital, 'location': location,
-                       'departments': departments, 'items': items})
+                      {'username': request.user.username, 'hospital': hospital, 'location': location,'departments': departments, 'items': items})
     else:
         return render(request, 'users/hospital.html',
-                      {'username': request.user.username, 'hospital': hospital, 'departments': departments})
+                      {'username': request.user.username, 'hospital': hospital, 'location': location,'departments': departments})
 
 
 @login_required(login_url='users:login')
@@ -182,7 +186,6 @@ def evaluate(request):
     else:
         form=EvaluateForm()
         return render(request,'users/evaluate.html',{'form':form})
-
 
 
 @login_required(login_url='users:login')
