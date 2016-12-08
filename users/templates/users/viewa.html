@@ -3,6 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+        <title>查看预约</title>
+    <h1>查看预约</h1>
+    {% if apps %}
+        <table>
+            <tr>
+                <td>患者姓名</td>
+                <td>性别</td>
+                <td>年龄</td>
+                <td>身份证号</td>
+                <td>医院</td>
+                <td>科室</td>
+                <td>医生</td>
+                <td>时间</td>
+                <td>到院取号时间</td>
+                <td>预约单生成时间</td>
+                <td>是否支付</td>
+
+            </tr>
+            {% for app in apps %}
+                <tr>
+                    <td>
+                        {{ app.patient.name }}
+                    </td>
+                    <td>{{ app.patient.gender }}</td>
+                    <td>{{ app.patient.age }}</td>
+                    <td>{{ app.patient.idcardnumber }}</td>
+                    <td>{{ app.hospital.name }}</td>
+                    <td>{{ app.department.name }}</td>
+                    <td>{{ app.doctor.name }}</td>
+                    <td>{{ app.appointment.registrationtime }}</td>
+                    <td>{{ app.appointment.createtime }}</td>
+                    <td>{{ app.appointment.ispaid }}</td>
+
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        没有预约！
+    {% endif %}
+
+    <a href="/">返回用户中心</a>
+{#    <a href="{% url 'user:viewa' %}">查看订单</a>#}
+{#    <a href="{% url 'user:changeinfo' %}">修改信息</a>#}
+{#        <a href=""></a>#}
+{#    <a href="{% url 'user:accountsafe' %}">账号安全</a>#}
+{#    <a href="{% url 'user:logout' %}">注销</a></br>#}
 </head>
 <body>
 
