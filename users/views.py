@@ -5,6 +5,7 @@ from .forms import RegisterForm, LoginForm, ChangePWForm, ChangeInfoForm, Evalua
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from datetime import timedelta
+import re
 
 from . import models
 from . import utils
@@ -39,13 +40,12 @@ def login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if not form.is_valid():
-            form = LoginForm()
             return render(request, 'users/login.html', {'form': form, 'error_message': '用户名或密码不正确'})
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
         user = authenticate(username=username, password=password)
 
-        if user is not None:
+        if user:
             if user.is_active:
                 auth_login(request, user)
                 next = request.GET.get('next', None)
@@ -55,10 +55,8 @@ def login(request):
             else:
                 return HttpResponse('您的账户已被禁用')
         else:
-            form = LoginForm()
             return render(request, 'users/login.html', {'form': form, 'error_message': '用户名或密码不正确'})
     else:
-        form = LoginForm()
         return render(request, 'users/login.html', {'form': form})
 
 
@@ -70,16 +68,54 @@ def logout(request):
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
+        form.is_valid()
         if form.is_valid():
-            if not form.cleaned_data['password'] == form.cleaned_data['second_password']:
-                form = RegisterForm()
+            username=form.cleaned_data['username']
+            password=form.cleaned_data['password']
+            second_password=form.cleaned_data['second_password']
+            telephone=form.cleaned_data['telephone']
+            email=form.cleaned_data['email']
+            name=form.cleaned_data['name']
+            idcardnumber=form.cleaned_data['idcardnumber']
+            age=form.cleaned_data['age']
+            if not username or len(username)<4:
+                return render(request, 'users/register.html', {'form': form, 'error_message': '用户名长度不能小于4位！'})
+            #用户名查重
+            find=models.Patient.objects.filter(username=username).first()
+            if find:
+                return render(request, 'users/register.html', {'form': form, 'error_message': '用户名已被注册！'})
+            if not password or len(password)<4:
+                return render(request, 'users/register.html', {'form': form, 'error_message': '密码长度不能小于4位！'})
+            if not password == second_password:
                 return render(request, 'users/register.html', {'form': form, 'error_message': '两次密码输入不一致!'})
-            else:
-                utils.add_user(form)
-                return render(request, 'users/regsuccess.html')
+            if email:
+                pattern=re.compile('^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$')
+                match=pattern.match(email)
+                if not match:
+                    return render(request, 'users/register.html', {'form': form, 'error_message': '请填写正确的邮箱格式!'})
+            if telephone:
+                pattern=re.compile('^((\(\d{2,3}\))|(\d{3}\-))?13\d{9}$')
+                match=pattern.match(telephone)
+                if not match:
+                    return render(request, 'users/register.html', {'form': form, 'error_message': '请填写正确的手机号格式!'})
+            if not name:
+                return render(request, 'users/register.html', {'form': form, 'error_message': '请填写真实姓名!'})
+            #身份证格式验证
+            pattern=re.compile(r'^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$')
+            match=pattern.match(idcardnumber)
+            if not match:
+                return render(request, 'users/register.html', {'form': form, 'error_message': '请输入正确的身份证号!'})
+            #身份证号查重
+            find=models.Patient.objects.filter(idcardnumber=idcardnumber).first()
+            if find:
+                return render(request, 'users/register.html', {'form': form, 'error_message': '该身份证号已被实名注册，一个身份证号只能注册一个账号!'})
+            if not age:
+                return render(request, 'users/register.html', {'form': form, 'error_message': '请选择年龄信息!'})
+            utils.add_user(form)
+            return render(request, 'users/regsuccess.html')
         else:
             form = RegisterForm()
-            return render(request, 'users/register.html', {'form': form, 'error_message': '请输入正确信息!'})
+            return render(request, 'users/register.html', {'form': form, 'error_message': '请输入完整个人信息!'})
     else:
         form = RegisterForm()
         return render(request, 'users/register.html', {'form': form})
