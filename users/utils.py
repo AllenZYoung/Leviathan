@@ -86,7 +86,9 @@ def get_departments(doctors):
 
 def add_appointment(bulletin, username):
     # 查重
-    appointment = models.Appointment.objects.filter(id_bulletin=bulletin).first()
+    patient=models.Patient.objects.filter(username=username)
+
+    appointment = models.Appointment.objects.filter(id_bulletin=bulletin,id_patient=patient).first()
     if appointment:
         return False
     patient = models.Patient.objects.filter(username=username).first()
