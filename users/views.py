@@ -57,6 +57,7 @@ def login(request):
         else:
             return render(request, 'users/login.html', {'form': form, 'error_message': '用户名或密码不正确'})
     else:
+        form=LoginForm()
         return render(request, 'users/login.html', {'form': form})
 
 
@@ -301,6 +302,34 @@ def change_pw(request):
             return render(request, 'users/changepwd.html', {'form': form})
 
 
+class Apt:
+    patient = None
+    doctor = None
+    bulletin = None
+    department = None
+    hospital = None
+
+    def __init__(self, patient, doctor, bulletin, department, hospital):
+        self.patient = patient
+        self.doctor = doctor
+        self.bulletin = bulletin
+        self.department = department
+        self.hospital = hospital
+
+
 @login_required(login_url='users:login')
 def view_appointment(request):
-    pass
+    username = request.user.username
+    patient = models.Patient.objects.filter(username=username).first()
+    apps = models.Appointment.objects.filter(id_patient=patient)
+    appointments = []
+    if apps is not None:
+        for app in apps:
+            bulletin = app.id_bulletin
+            doc_dep = bulletin.id_doctor_department
+            doctor = doc_dep.id_doctor
+            department = doc_dep.id_department
+            hospital = department.id_hospital
+            apt = Apt(patient, doctor, bulletin, department, hospital)
+            appointments.append(apt)
+    return render(request, 'users/viewa.html', {'apps': appointments})
