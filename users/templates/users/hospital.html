@@ -211,7 +211,7 @@
                                                 <tbody>
                                                     {% for item in items%}
                                                         <tr class="odd" role="row">
-                                                                <td><a href="{% url 'users:doctor' %}?doctor_id={{ item.doctor.id_doctor }}&bullet_id={{ item.bulletin.id_bulletin }}&department_id={{ item.department.id_department }}">{{ item.doctor.name }}</a></td>
+                                                                <td><a href="{% url 'users:doctor' %}?doctor_id={{ item.doctor.id_doctor }}">{{ item.doctor.name }}</a></td>
                                                                 <td>{{ item.department.name }}</td>
                                                                 <td>{{ item.doctor.level }}</td>
                                                                 <td>{{ item.bulletin.availabletime }}---{{ item.endtime }}</td>

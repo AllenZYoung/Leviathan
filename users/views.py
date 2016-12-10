@@ -10,7 +10,7 @@ import re
 from . import models
 from . import utils
 
-provinces = [u'河北', u'陕西', u'辽宁', u'吉林', u'黑龙江', u'江苏', u'浙江', u'安徽', u'福建', u'江西', u'山东', u'河南', u'湖北', u'湖南', u'广东'
+provinces = [u'河北', u'辽宁', u'吉林', u'黑龙江', u'江苏', u'浙江', u'安徽', u'福建', u'江西', u'山东', u'河南', u'湖北', u'湖南', u'广东'
     , u'海南', u'四川', u'贵州', u'云南', u'陕西', u'甘肃', u'青海', u'北京', u'天津', u'上海', u'重庆', u'内蒙古', u'广西', u'宁夏', u'新疆', u'西藏']
 provinces.sort()
 
@@ -174,14 +174,13 @@ def test(request):
 
 def doctor(request):
     doctor_id = request.GET.get('doctor_id', 1)
-    bulletin_id = request.GET.get('bulletin_id', 1)
-    department_id = request.GET.get('department_id', 1)
     doctor = models.Doctor.objects.filter(id_doctor=doctor_id).first()
-    bulletin = models.Bulletin.objects.filter(id_bulletin=bulletin_id).first()
-    department = models.Department.objects.filter(id_department=department_id).first()
+    # bulletin_id = request.GET.get('bulletin_id', 1)
+    # department_id = request.GET.get('department_id', 1)
+    # bulletin = models.Bulletin.objects.filter(id_bulletin=bulletin_id).first()
+    # department = models.Department.objects.filter(id_department=department_id).first()
     return render(request, 'users/doctor.html',
-                  {'username': request.user.username, 'doctor': doctor, 'bulletin': bulletin
-                      , 'department': department})
+                  {'username': request.user.username, 'doctor': doctor})
 
 
 @login_required(login_url='users:login')
@@ -250,7 +249,7 @@ def user_center(request):
             doctor = doc_dep.id_doctor
             department = doc_dep.id_department
             hospital = department.id_hospital
-            apt = Apt(patient, doctor, bulletin, department, hospital)
+            apt = Apt(patient, doctor, bulletin, department, hospital,app)
             appointments.append(apt)
 
     #view change_info
@@ -326,13 +325,15 @@ class Apt:
     bulletin = None
     department = None
     hospital = None
+    appointment=None
 
-    def __init__(self, patient, doctor, bulletin, department, hospital):
+    def __init__(self, patient, doctor, bulletin, department, hospital,appointment):
         self.patient = patient
         self.doctor = doctor
         self.bulletin = bulletin
         self.department = department
         self.hospital = hospital
+        self.appointment=appointment
 
 
 @login_required(login_url='users:login')
@@ -348,6 +349,6 @@ def view_appointment(request):
             doctor = doc_dep.id_doctor
             department = doc_dep.id_department
             hospital = department.id_hospital
-            apt = Apt(patient, doctor, bulletin, department, hospital)
+            apt = Apt(patient, doctor, bulletin, department, hospital,app)
             appointments.append(apt)
     return render(request, 'users/viewa.html', {'apps': appointments})
