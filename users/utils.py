@@ -126,6 +126,5 @@ def change_email(username, email):
 
 def change_age(username, age):
     models.Patient.objects.filter(username=username).update(age=age)
-
 # def change_gender(username,age):
 #     models.Patient.objects.filter(username=username).update(gender=gender)
