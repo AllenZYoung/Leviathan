@@ -229,11 +229,8 @@ def evaluate(request):
 @login_required(login_url='users:login')
 def user_center(request):
     username = request.user.username
-    # print(username)
-    # userhere = models.Patient.objects.filter(username='useruser').first()
-    # it should be :
+
     userhere = models.Patient.objects.filter(username=username).first()
-    # print(userhere)
     name = userhere.name
     sex = userhere.gender
     age = userhere.age
@@ -241,9 +238,29 @@ def user_center(request):
     tele = userhere.telephone
     email = userhere.email
     credit = userhere.credit
-    return render(request, 'users/usercenter.html', {'wholename': name, 'sex': sex, 'age': age,
-                                                     'idcn': idcn, 'tel': tele, 'mail': email, 'credit': credit
-                                                     })
+
+    #view_appointment
+    patient = models.Patient.objects.filter(username=username).first()
+    apps = models.Appointment.objects.filter(id_patient=patient)
+    appointments = []
+    if apps is not None:
+        for app in apps:
+            bulletin = app.id_bulletin
+            doc_dep = bulletin.id_doctor_department
+            doctor = doc_dep.id_doctor
+            department = doc_dep.id_department
+            hospital = department.id_hospital
+            apt = Apt(patient, doctor, bulletin, department, hospital)
+            appointments.append(apt)
+
+    #view change_info
+    info_form=ChangeInfoForm()
+    pw_form=ChangePWForm()
+    return render(request, 'users/usercenter.html',
+                  {'username':username,'wholename':
+                    name, 'sex': sex, 'age': age,
+                    'idcn': idcn, 'tel': tele, 'mail': email, 'credit': credit,'apps': appointments,
+                    'info_form':info_form,'pw_form':pw_form })
 
 
 @login_required(login_url='users:login')
@@ -290,10 +307,10 @@ def change_pw(request):
         form = ChangePWForm(request.POST)
         if form.is_valid():
             username = request.user.username
-            oldpassword = request.POST.get('oldpassword', '')
+            oldpassword = form.cleaned_data['oldpassword']
             user = authenticate(username=username, password=oldpassword)
             if user is not None and user.is_active:
-                newpassword = request.POST.get('newpassword1', '')
+                newpassword = form.cleaned_data['newpassword1']
                 utils.change_password(newpassword, username)
                 return render(request, 'users/changepwd.html', {'changepwd_success': True})
             else:

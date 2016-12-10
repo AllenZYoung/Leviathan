@@ -19,13 +19,13 @@
         <a href="{% url 'users:login' %}">立即登录</a>
     </div>
 {% endif %}
-<form action="" method="post">
-    <table>
-        {{ form.as_table }}
-    </table>
-    {% csrf_token %}
-    <input type="submit" value="确认修改">
-</form>
+{#<form action="" method="post">#}
+{#    <table>#}
+{#        {{ form.as_table }}#}
+{#    </table>#}
+{#    {% csrf_token %}#}
+{#    <input type="submit" value="确认修改">#}
+{#</form>#}
 {% if not changepwd_success %}
     <a href="{% url 'user:usercenter' %}">返回用户中心</a>
 {% endif %}

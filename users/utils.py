@@ -106,6 +106,8 @@ def add_comment(bulletin_id, patient_id, level, comment):
 
 def change_password(newpassword, username):
     models.Patient.objects.filter(username=username).update(password=newpassword)
+    User.objects.filter(username=username).delete()
+    User.objects.create_user(username=username,password=newpassword)
 
 
 def change_name(username, name):
