@@ -69,7 +69,9 @@ def logout(request):
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
-        form.is_valid()
+        valid=form.is_valid()
+        print form
+        print valid
         if form.is_valid():
             username=form.cleaned_data['username']
             password=form.cleaned_data['password']
@@ -115,7 +117,6 @@ def register(request):
             utils.add_user(form)
             return render(request, 'users/regsuccess.html')
         else:
-            form = RegisterForm()
             return render(request, 'users/register.html', {'form': form, 'error_message': '请输入完整个人信息!'})
     else:
         form = RegisterForm()
