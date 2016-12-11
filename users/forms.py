@@ -65,7 +65,7 @@ class ChangeInfoForm(forms.Form):
 
 class EvaluateForm(forms.Form):
     LEVEL = (
-        (1, '*'), (2, '**'), (3, '***'), (4, '****'), (5, '*****')
+         (5, '很好'),(4, '好'), (3, '一般'),(2, '不好'),  (1, '很不好'),
     )
     level = forms.ChoiceField(choices=LEVEL, label='评价等级')
-    comment = forms.CharField(widget=forms.Textarea, label='写下你对医生的评价', required=False)
+    comment = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control','rows':'8'}), label='写下你对医生的评价', required=False)

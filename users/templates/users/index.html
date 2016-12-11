@@ -89,8 +89,8 @@
                                     <a href="{% url 'users:logout' %}">
                                     <i class="icon-logout"></i> 注销 </a>
                                 {% else %}
-                                    <a href="{% url 'users:login' %}">
-                                    <i class="icon-logout"></i> 登录 </a>
+                                    <a href="{% url 'users:login' %}?next={{ request.get_full_path }}">
+                                    <i class="icon-login"></i> 登录 </a>
                                 {% endif %}
 
 							</li>

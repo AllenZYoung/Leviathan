@@ -99,11 +99,15 @@ def add_appointment(bulletin, username):
     return True
 
 
-def add_comment(bulletin_id, patient_id, level, comment):
+def add_comment(bulletin_id, patient, level, comment):
     doctor_department = models.Bulletin.objects.filter(id_bulletin=bulletin_id).first().id_doctor_department
     doctor = models.DoctorDepartment.objects.filter(id_doctor_department=doctor_department.id_doctor_department).first().id_doctor
-    patient = models.Patient.objects.filter(id_patient=patient_id).first()
+    #查重
+    evaluation=models.Evaluation.objects.filter(patient=patient,doctor=doctor).first()
+    if evaluation:
+        return False
     models.Evaluation.objects.create(level=level, comment=comment, doctor=doctor, patient=patient).save()
+    return True
 
 
 def change_password(newpassword, username):

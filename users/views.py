@@ -175,12 +175,38 @@ def test(request):
 def doctor(request):
     doctor_id = request.GET.get('doctor_id', 1)
     doctor = models.Doctor.objects.filter(id_doctor=doctor_id).first()
-    # bulletin_id = request.GET.get('bulletin_id', 1)
-    # department_id = request.GET.get('department_id', 1)
-    # bulletin = models.Bulletin.objects.filter(id_bulletin=bulletin_id).first()
-    # department = models.Department.objects.filter(id_department=department_id).first()
-    return render(request, 'users/doctor.html',
-                  {'username': request.user.username, 'doctor': doctor})
+    evaluations=models.Evaluation.objects.filter(doctor=doctor)
+    #计算评价百分比
+    level_5=0
+    level_4=0
+    level_3 = 0
+    level_2 = 0
+    level_1 = 0
+    size=len(evaluations)
+    if size>0:
+        for item in evaluations:
+            if item.level == 5:
+                level_5+=1
+            elif item.level == 4:
+                level_4+=1
+            elif item.level == 3:
+                level_3+=1
+            elif item.level == 2:
+                level_2+=1
+            else:
+                level_1+=1
+        ratio_5 = 100*level_5 / size
+        ratio_4 = 100*level_4 / size
+        ratio_3 = 100*level_3 / size
+        ratio_2 = 100*level_2 / size
+        ratio_1 = 100*level_1 / size
+
+        return render(request, 'users/doctor.html',
+                      {'username': request.user.username, 'doctor': doctor,'evaluations':evaluations,
+                       'ratio_5':ratio_5,'ratio_4':ratio_4,'ratio_3':ratio_3,'ratio_2':ratio_2,'ratio_1':ratio_1,})
+    else:
+        return render(request, 'users/doctor.html',
+                      {'username': request.user.username, 'doctor': doctor})
 
 
 @login_required(login_url='users:login')
@@ -202,27 +228,29 @@ def reservation(request):
 
 @login_required(login_url='users:login')
 def pay(request):
-    return render(request,'users/pay.html')
+    username=request.user.username
+    return render(request,'users/pay.html',{'username':username})
 
 
 @login_required(login_url='users:login')
 def evaluate(request):
+    username=request.user.username
+    patient=models.Patient.objects.filter(username=username).first()
     bulletin_id=request.GET.get('bulletin_id',None)
-    patient_id=request.GET.get('patient_id',None)
-    # if not bulletin_id:
-    #     return HttpResponse('评价医生')
     if request.method=='POST':
         form = EvaluateForm(request.POST)
         if form.is_valid():
             level=form.cleaned_data['level']
             comment=form.cleaned_data['comment']
-            utils.add_comment(bulletin_id,patient_id,level,comment)
-            return HttpResponse('评价成功')
+            if utils.add_comment(bulletin_id,patient,level,comment):
+                return HttpResponse('评价成功')
+            else:
+                return HttpResponse('您已评价过该医生，无法再次评价')
         else:
-            return render(request, 'users/evaluate.html', {'form': form,'message':'请输入正确信息'})
+            return render(request, 'users/evaluate.html', {'username':username,'form': form,'message':'请输入正确信息'})
     else:
         form=EvaluateForm()
-        return render(request,'users/evaluate.html',{'form':form})
+        return render(request,'users/evaluate.html',{'username':username,'form':form})
 
 
 @login_required(login_url='users:login')

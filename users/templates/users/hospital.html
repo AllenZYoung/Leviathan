@@ -54,8 +54,8 @@
 							    </li>
                             {% else %}
                                 <li>
-								    <a href="{% url 'users:login' %}">
-								    <i class="icon-logout"></i> 登录 </a>
+								    <a href="{% url 'users:login' %}?next={{ request.get_full_path }}">
+								    <i class="icon-login"></i> 登录 </a>
 							    </li>
                             {% endif %}
 
@@ -155,6 +155,8 @@
                                     {% if hospital.picture %}
                                         {% load static %}
                                         <img src="{% static hospital.picture %}" class="img-thumbnail" width="100%">
+                                     {% else %}
+                                        <img src="{% static 'users/hospital_default.jpg' %}" class="img-thumbnail" width="100%">
                                     {% endif %}
                                 </div>
                             </div>
@@ -211,7 +213,7 @@
                                                 <tbody>
                                                     {% for item in items%}
                                                         <tr class="odd" role="row">
-                                                                <td><a href="{% url 'users:doctor' %}?doctor_id={{ item.doctor.id_doctor }}">{{ item.doctor.name }}</a></td>
+                                                                <td><a href="{% url 'users:doctor' %}?doctor_id={{ item.doctor.id_doctor }}" target="_blank">{{ item.doctor.name }}</a></td>
                                                                 <td>{{ item.department.name }}</td>
                                                                 <td>{{ item.doctor.level }}</td>
                                                                 <td>{{ item.bulletin.availabletime }}---{{ item.endtime }}</td>
@@ -220,12 +222,12 @@
                                                                 <td>{{ item.bulletin.fee }}</td>
                                                                  {% if username %}
                                                                      {% if item.bulletin.countavailable > item.bulletin.countoccupied %}
-                                                                         <td><a href="{% url 'users:reservation' %}?doctor_id={{ item.doctor.id_doctor }}&bulletin_id={{ item.bulletin.id_bulletin }}&department_id={{ item.department.id_department }}">点击预约</a></td>
+                                                                         <td><a href="{% url 'users:reservation' %}?doctor_id={{ item.doctor.id_doctor }}&bulletin_id={{ item.bulletin.id_bulletin }}&department_id={{ item.department.id_department }}" target="_blank">点击预约</a></td>
                                                                          {% else %}
                                                                          <td>名额已满，无法预约</td>
                                                                          {% endif %}
                                                                 {% else %}
-                                                                <td><a href="{% url 'users:login' %}">登录</a></td>
+                                                                <td><a href="{% url 'users:login' %}?next={{ request.get_full_path }}">登录</a></td>
                                                                 {% endif %}
                                                         </tr>
                                                     {% endfor %}

@@ -229,6 +229,7 @@ class Evaluation(models.Model):
     doctor=models.ForeignKey(Doctor, to_field='id_doctor', db_column='doctor')
     level=models.IntegerField(null=True,blank=True,help_text='医生评价等级')
     comment=models.TextField(null=True,blank=True,help_text='医生评价',default='暂无评价信息')
+    #createtime = models.DateTimeField(help_text='评价成时间', null=False)
 
     class Meta:
         db_table='evaluation'

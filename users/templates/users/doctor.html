@@ -3,25 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <title>医生信息</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="" name="description">
+    <meta content="" name="author">
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet"
+          type="text/css">
+    <link href="../../static/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet"
+          type="text/css">
+    <link href="../../static/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet"
+          type="text/css">
+    <link href="../../static/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="../../static/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css">
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PAGE LEVEL PLUGIN STYLES -->
+    <link href="../../static/assets/global/plugins/morris/morris.css" rel="stylesheet" type="text/css">
+    <!-- END PAGE LEVEL PLUGIN STYLES -->
+    <!-- BEGIN PAGE STYLES -->
+    <link href="../../static/assets/admin/pages/css/tasks.css" rel="stylesheet" type="text/css"/>
+    <!-- END PAGE STYLES -->
+    <!-- BEGIN THEME STYLES -->
+    <!-- DOC: To use 'rounded corners' style just load 'components-rounded.css' stylesheet instead of 'components.css' in the below style tag -->
+    <link href="../../static/assets/global/css/components-rounded.css" id="style_components" rel="stylesheet"
+          type="text/css">
+    <link href="../../static/assets/global/css/plugins.css" rel="stylesheet" type="text/css">
+    <link href="../../static/assets/admin/layout3/css/layout.css" rel="stylesheet" type="text/css">
+    <link href="../../static/assets/admin/layout3/css/themes/test.css" rel="stylesheet" type="text/css"
+          id="style_color">
+    <link href="../../static/assets/admin/layout3/css/custom.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-{% if username %}
-    你好，{{ username }}
-    <a href="{% url 'users:logout' %}">注销</a></br>
-{% else %}
-    <a href="{% url 'users:login' %}">登录</a></br>
-{% endif %}
-<a href="{% url 'users:index' %}">首页</a></br>
-{% if doctor %}
-    {% if doctor.picture %}
-        {% load static %}
-        <img src="{% static doctor.picture %}"/></br>
-        {% endif %}
-    {{ doctor.name }} </br>
-    {{ doctor.gender }}
-    {{ doctor.level }} </br>
-    从医时间: {{ doctor.careertime}} 年</br>
-    个人信息: {{ doctor.information }} </br>
-{% endif %}
+<div class="page-header">
+    <!-- BEGIN HEADER TOP -->
+    <div class="page-header-top">
+        <div class="container">
+            <!-- BEGIN LOGO -->
+            <div class="page-logo">
+                <a href="{% url 'users:index' %}"><img src="../../static/assets/admin/layout3/img/logo-default.png"
+                                                       alt="logo" class="logo-default"></a>
+            </div>
+            <!-- END LOGO -->
+            <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+            <a href="javascript:;" class="menu-toggler"></a>
+            <!-- END RESPONSIVE MENU TOGGLER -->
+            <!-- BEGIN TOP NAVIGATION MENU -->
+            <div class="top-menu">
+                <ul class="nav navbar-nav pull-right">
+
+
+                    <li class="droddown dropdown-separator">
+                        <span class="separator"></span>
+                    </li>
+
+                    <!-- BEGIN USER LOGIN DROPDOWN -->
+                    <li class="dropdown dropdown-user dropdown-dark">
+                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                           data-close-others="true">
+                            <img alt="" class="img-circle" src="../../static/assets/admin/layout3/img/avatar9.jpg">
+                            <span class="username username-hide-mobile">{{ username }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-default">
+                            <li>
+                                {% if username %}
+                                    <a href="{% url 'users:logout' %}">
+                                        <i class="icon-logout"></i> 注销 </a>
+                                {% else %}
+                                    <a href="{% url 'users:login' %}?next={{ request.get_full_path }}">
+                                        <i class="icon-login"></i> 登录 </a>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- END HEADER TOP -->
+    <!-- BEGIN HEADER MENU -->
+    <div class="page-header-menu">
+        <div class="container">
+            <!-- BEGIN MEGA MENU -->
+            <!-- DOC: Apply "hor-menu-light" class after the "hor-menu" class below to have a horizontal menu with white background -->
+            <!-- DOC: Remove data-hover="dropdown" and data-close-others="true" attributes below to disable the dropdown opening on mouse hover -->
+            <div class="hor-menu ">
+                <ul class="nav navbar-nav">
+                    <li class="menu-dropdown">
+                        <a href="{% url 'users:index' %}" class="tooltips" data-container="body" data-placement="bottom"
+                           data-html="true" data-original-title="开始预约">
+                            开始预约</a>
+                    </li>
+                    <li class="menu-dropdown">
+                        <a href="{% url 'users:usercenter' %}" class="tooltips" data-container="body"
+                           data-placement="bottom" data-html="true" data-original-title="用户中心">
+                            用户中心</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- END MEGA MENU -->
+        </div>
+    </div>
+    <!-- END HEADER MENU -->
+</div>
+
+<div class="page-content">
+    <div class="container">
+        <div class="portlet light">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="portlet blue-hoki box">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-cogs"></i>医生信息
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="row static-info">
+                                <div class="col-md-5 name">
+                                    医生：
+                                </div>
+                                <div class="col-md-7 value">
+                                    {{ doctor.name }}
+                                </div>
+                            </div>
+                            <div class="row static-info">
+                                <div class="col-md-5 name">
+
+                                </div>
+                                <div class="col-md-7 value">
+                                    {{ doctor.gender }} {{ doctor.level }}
+                                </div>
+                            </div>
+                            <div class="row static-info">
+                                <div class="col-md-5 name">
+                                    从医时间：
+                                </div>
+                                <div class="col-md-7 value">
+                                    {{ doctor.careertime }}年
+                                </div>
+                            </div>
+                            <div class="row static-info">
+                                <div class="col-md-5 name">
+                                    相关信息：
+                                </div>
+                                <div class="col-md-7 value">
+                                    {{ doctor.information }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="portlet blue-hoki box">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-cogs"></i>医生照片
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            {% if doctor.picture %}
+                                {% load static %}
+                                <img src="{% static doctor.picture %}" class="img-thumbnail" width="100%">
+                            {% else %}
+                                {% load static %}
+                                <img src="{% static 'users/doctor_default.png' %}" class="img-thumbnail" width="100%">
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet box blue-hoki">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="fa fa-cogs"></i>病人评价:
+                                </div>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="media">
+                                <!-- 这部分是评价的结果百分比 通过 width:20% 这样控制宽度，每个<a>里还需改data-original-title="20%"鼠标移动到那里显示具体百分比 -->
+                                <div class="row">
+                                    <div class="col-md-1"><br></div>
+                                    <div class="col-md-11">
+                                        <a class="btn tooltips blue" data-container="body" data-placement="right"
+                                           data-original-title="{{ ratio_5 }}%" style="width:{{ ratio_5 }}%">很好</a>
+                                    </div>
+                                </div>
+                                <div class="row" style="padding-top:10px">
+                                    <div class="col-md-1"><br></div>
+                                    <div class="col-md-11">
+                                        <a class="btn tooltips green" data-container="body" data-placement="right"
+                                           data-original-title="{{ ratio_4 }}%"
+                                           style="width:{{ ratio_4|add:10 }}%">好</a>
+                                    </div>
+                                </div>
+                                <div class="row" style="padding-top:10px">
+                                    <div class="col-md-1"><br></div>
+                                    <div class="col-md-11">
+                                        <a class="btn tooltips grey-cascade" data-container="body"
+                                           data-placement="right" data-original-title="{{ ratio_3 }}%"
+                                           style="width:{{ ratio_3|add:10 }}%">一般</a>
+                                    </div>
+                                </div>
+                                <div class="row" style="padding-top:10px">
+                                    <div class="col-md-1"><br></div>
+                                    <div class="col-md-11">
+                                        <a class="btn tooltips yellow" data-container="body" data-placement="right"
+                                           data-original-title="{{ ratio_2 }}%"
+                                           style="width:{{ ratio_2|add:10 }}%">不好</a>
+                                    </div>
+                                </div>
+                                <div class="row" style="padding-top:10px">
+                                    <div class="col-md-1"><br></div>
+                                    <div class="col-md-11">
+                                        <a class="btn tooltips red" data-container="body" data-placement="right"
+                                           data-original-title="{{ ratio_1 }}%"
+                                           style="width:{{ ratio_1|add:10 }}%">很不好</a>
+                                    </div>
+                                </div>
+                                <!-- 以下部分为评论 -->
+                                {% if evaluations %}
+                                    {% for item in evaluations %}
+                                        <div class="row" style="padding-top:30px">
+                                            <div class="col-md-1">
+                                                {% if item.level == 5 %}
+                                                    <a href="javascript:;" class="btn blue">
+                                                        <span>很好</span>
+                                                    </a>
+                                                {% elif item.level == 4 %}
+                                                    <a href="javascript:;" class="btn green">
+                                                        <span>好</span>
+                                                    </a>
+                                                {% elif item.level == 4 %}
+                                                    <a href="javascript:;" class="btn grey-cascade">
+                                                        <span>一般</span>
+                                                    </a>
+                                                {% elif item.level == 4 %}
+                                                    <a href="javascript:;" class="btn yellow">
+                                                        <span>不好</span>
+                                                    </a>
+                                                {% elif item.level == 4 %}
+                                                    <a href="javascript:;" class="btn red">
+                                                        <span>很不好</span>
+                                                    </a>
+                                                {% endif %}
+
+                                            </div>
+                                            <div class="col-md-11">
+                                                <div class="media-body">
+                                                    {#										<h4 class="media-heading"><span>July 5,2013</span></h4>#}
+                                                    <h4>{{ item.comment }}</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    暂时没有人对该医生做出评价
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../static/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+<script src="../../static/assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
+<script src="../../static/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+<script src="../../static/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="../../static/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js"
+        type="text/javascript"></script>
+<script src="../../static/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js"
+        type="text/javascript"></script>
+<script src="../../static/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="../../static/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+<script src="../../static/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="../../static/assets/global/plugins/morris/morris.min.js" type="text/javascript"></script>
+<script src="../../static/assets/global/plugins/morris/raphael-min.js" type="text/javascript"></script>
+<script src="../../static/assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
+<script src="../../static/assets/global/scripts/metronic.js" type="text/javascript"></script>
+<script src="../../static/assets/admin/layout3/scripts/layout.js" type="text/javascript"></script>
+<script src="../../static/assets/admin/layout3/scripts/demo.js" type="text/javascript"></script>
+<script src="../../static/assets/admin/pages/scripts/index3.js" type="text/javascript"></script>
+<script src="../../static/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<script>
+    jQuery(document).ready(function () {
+        Metronic.init(); // init metronic core componets
+        Layout.init(); // init layout
+        Demo.init(); // init demo(theme settings page)
+        QuickSidebar.init(); // init quick sidebar
+        Index.init(); // init index page
+        Tasks.initDashboardWidget(); // init tash dashboard widget
+    });
+</script>
 </body>
 </html>
